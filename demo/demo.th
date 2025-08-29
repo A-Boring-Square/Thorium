@@ -1,0 +1,232 @@
+// =================================================================================
+// THORIUM LANGUAGE TUTORIAL
+// =================================================================================
+// This file demonstrates all major Thorium features, including:
+// - C-style variable declarations
+// - Lists
+// - Function definitions and calls
+// - External functions (@extern)
+// - Function types stored in structs
+// - Mutable structs (@mut)
+// - Struct initialization and single-field pushes (<|)
+// - Loops and conditionals
+// - Nested structs and arrays of structs
+// - Multi-line ':' syntax for readability
+// =================================================================================
+
+@module thorium_demo_program
+@use core.io
+
+// =================================================================================
+// 1. VARIABLES
+// =================================================================================
+
+// Immutable variable by default
+int immutable_value = 42
+string greeting = "Hello"
+
+// Mutable variables
+@mut int a = 3
+@mut int b = 5
+
+// Lists (multi-line with ':')
+@mut int numbers = [1 :
+                    2 :
+                    3 :
+                    4 :
+                    5]
+
+string words = ["apple" :
+                "banana" :
+                "cherry"]
+
+// =================================================================================
+// 2. FUNCTION DEFINITIONS
+// =================================================================================
+
+// Sum a list of integers
+function sum_list :
+         nums int[] :
+         int =
+    int total
+    total = 0
+    for n in nums do
+        total = total + n
+    ret total
+
+// Concatenate greeting
+function greet :
+         name string :
+         string =
+    ret "Hello " + name
+
+// Return maximum of two ints
+function max :
+         x int :
+         y int :
+         int =
+    if x > y then
+        ret x
+    else
+        ret y
+
+// Higher-order function: applies a function by name
+function apply_op :
+         f external_multiply :
+         x int :
+         y int :
+         int =
+    ret f :
+        x :
+        y
+
+// =================================================================================
+// 3. EXTERNAL FUNCTIONS
+// =================================================================================
+
+// External function, implemented outside Thorium
+@extern
+function external_multiply :
+         x int :
+         y int :
+         int
+
+// =================================================================================
+// 4. FUNCTION TYPES AND STRUCTS
+// =================================================================================
+
+// Mutable Point struct with function reference
+@mut type Point =
+    int x
+    int y
+    external_multiply operation
+    greet describe_method   // function type reference
+
+// Mutable Person struct with function reference
+@mut type Person =
+    string name
+    int age
+    greet greet_method
+
+// Nested structs and arrays example
+@mut type Rectangle =
+    Point top_left
+    Point bottom_right
+    greet describe
+
+@mut type Polygon =
+    Point vertices[]
+    int vertex_count
+    greet describe
+
+// =================================================================================
+// 5. STRUCT INITIALIZATION
+// =================================================================================
+
+// Full initialization using '<|' pushes
+@mut Point origin <| 0 <| 0 <| external_multiply <| greet
+@mut Person thorium_user <| "Alice" <| 21 <| greet
+
+// Single-field pushes
+origin <| 5     // x = 5
+origin <| 10    // y = 10
+thorium_user <| 22 // age = 22
+
+// Nested struct initialization
+@mut Point p1 <| 0 <| 0 <| external_multiply <| greet
+@mut Point p2 <| 10 <| 20 <| external_multiply <| greet
+@mut Rectangle rect <| p1 <| p2 <| greet
+
+// Array of structs (Polygon)
+@mut Point v1 <| 0 <| 0 <| external_multiply <| greet
+@mut Point v2 <| 5 <| 0 <| external_multiply <| greet
+@mut Point v3 <| 5 <| 5 <| external_multiply <| greet
+@mut Point v4 <| 0 <| 5 <| external_multiply <| greet
+
+@mut Polygon square
+square.vertices = [v1 : v2 : v3 : v4]
+square.vertex_count = 4
+square.describe = greet // just reusing a function for demo
+
+// =================================================================================
+// 6. USING FUNCTIONS AND STRUCTS
+// =================================================================================
+
+// Call external function
+int result = external_multiply :
+                 a :
+                 b
+io.print : result
+
+// Call function stored in struct
+result = origin.operation :
+             2 :
+             8
+io.print : result
+
+// Higher-order function
+result = apply_op :
+             origin.operation :
+             10 :
+             20
+io.print : result
+
+// Sum a list
+result = sum_list :
+             numbers
+io.print : result
+
+// Greeting
+io.print : greet :
+          "Thorium"
+
+// Call function stored in struct
+io.print : thorium_user.greet_method :
+          thorium_user.name
+
+// Conditional
+io.print : max :
+          7 :
+          12
+
+// Loops
+for n in numbers do
+    io.print : n
+
+// Nested struct functions
+io.print : rect.describe : rect
+
+// Loop over array of structs
+for i in square.vertices do
+    io.print : i.describe_method()
+
+// Update nested struct with single pushes
+rect.top_left <| 2
+rect.top_left <| 3
+io.print : "Updated top-left: " + rect.top_left.describe_method()
+
+// Update struct members directly
+origin.x = 15
+origin.y = 20
+io.print : origin.x
+io.print : origin.y
+
+thorium_user.name = "Bob"
+io.print : thorium_user.name
+io.print : thorium_user.age
+
+// =================================================================================
+// 7. SUMMARY
+// =================================================================================
+// This tutorial covers:
+// - Immutable and mutable variables
+// - Lists with ':' separator
+// - Function definitions, calls, and higher-order functions
+// - External functions (@extern)
+// - Function types stored in structs
+// - Mutable structs (@mut) and nested structs
+// - Struct initialization with '<|' (full or single push)
+// - Loops and conditionals
+// - Arrays of structs
+// - Multi-line ':' syntax for readability
+// =================================================================================

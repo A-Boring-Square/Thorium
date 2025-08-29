@@ -1,0 +1,78 @@
+--- Thorium VM Opcode Spec ---
+
+--- Runtime Metadata / Debug ---
+1       : runtime_debug_mode <bool>                 ; enable/disable debug mode
+2       : module_version <string_id>               ; store module version
+3       : source_file <string_id>                  ; store original source filename
+4       : breakpoint <breakpoint_id>              ; declare a runtime breakpoint
+5       : trace_entry <scope_id>                   ; enter scope trace
+6       : trace_exit                                ; exit current scope/module
+trace_loop      : <var_id>                          ; trace foreach loop iteration
+trace_call      : <func_id>                         ; trace function call
+trace_scope     : <scope_id>                        ; trace entry into struct/block
+trace_scope_exit: <scope_id>                        ; trace exit from struct/block
+
+--- Variable / Stack Operations ---
+10      : var <var_id> <type_id> <value>           ; immutable variable declaration
+11      : mut <var_id> <type_id> <value_or_scope>  ; mutable variable declaration or struct instance
+12      : load <var_id>                             ; push variable onto stack
+13      : add                                      ; add top two stack values
+14      : ret <var_id_or_stack_top>                 ; return value
+15      : concat <string_id> <var_id_or_stack_top> ; concatenate string and value
+16      : gt                                       ; greater-than comparison
+17      : if_true <true_branch> <false_branch>     ; conditional branch
+18      : sub                                      ; subtraction
+19      : mul                                      ; multiplication
+20      : push <value>                             ; push value to list
+21      : push_field <field_id> <value_id_or_literal> ; push value to struct field
+22      : pop                                      ; pop value from stack
+23      : dup                                      ; duplicate top of stack
+
+--- Functions ---
+30      : function_def <func_id> <param_ids[]> <return_type_id> <body_scope> ; define function
+31      : call <func_id> <arg1_id> <arg2_id> ...  ; call function
+32      : io.print <var_id_or_literal>            ; built-in print
+33      : io.eprint <var_id_or_literal>           ; built-in error print
+34      : io.input <prompt_var_or_literal>        ; built-in input (returns string)
+35      : builtin <func_id>                        ; declare a core built-in function (no impl in Thorium source)
+36      : extern <func_id> <param_ids[]> <return_type_id> ; declare external function (implemented outside VM)
+
+--- Lists ---
+20      : push <value>                             ; push element into list
+37      : list_len <list_var_id>                   ; push length of list onto stack
+38      : list_get <list_var_id> <index>           ; push list element at index onto stack
+39      : list_set <list_var_id> <index> <value>   ; set list element at index
+
+--- Structs / Types ---
+50      : mut_type <type_id> <field1_id> <field2_id> ... ; define mutable struct type
+11      : mut <var_id> <type_id> <body_scope>     ; instantiate mutable struct
+51      : get_field <var_id_or_stack_top> <field_id> ; get field value
+52      : set_field <var_id_or_stack_top> <field_id> <value> ; set field value
+
+--- Loops ---
+40      : foreach <iter_var_id> <list_id> <body_scope>  ; loop over list
+41      : while <condition_func_id> <body_scope>       ; while loop
+
+--- Type / Casting ---
+53      : type_of <var_or_stack_top>                 ; push type id of value
+54      : cast <var_or_stack_top> <target_type_id>   ; cast value to target type
+
+--- Stack / Misc ---
+55      : swap                                      ; swap top two stack elements
+56      : jump <scope_index_or_offset>              ; unconditional jump
+57      : jump_if_true <scope_index_or_offset>      ; jump if top of stack is true
+58      : jump_if_false <scope_index_or_offset>     ; jump if top of stack is false
+59      : noop                                      ; no operation
+60      : halt                                      ; end execution
+
+--- Notes ---
+- Module name stays Base64 in top-level list.
+- Nested lists = scopes (function bodies, loops, struct instances, conditionals).
+- Constants (int, float, bool) remain literals.
+- Strings, functions, struct types, variables use numeric IDs.
+- Built-ins and externals have no implementation in Thorium source.
+- Debug instructions optional, inserted in function entry/exit, loops, struct instantiation.
+- Top-level instructions not in lists belong to global scope.
+- Lists, structs, loops, and functions always use sublists as scopes.
+- Strings are Base64 encoded in the program
+- Stack-based operations manipulate a single VM stack; most instructions push/pop implicitly.

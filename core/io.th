@@ -1,0 +1,48 @@
+@module io
+
+// -----------------------------
+// Built-in functions for I/O
+// -----------------------------
+
+@builtin
+// Prints @param(text) to stdout
+function print : text string
+
+
+@builtin
+// Prints @param(text) to stderr
+function eprint : text string
+
+
+@builtin
+// Prints @param(prompt) and reads a line of input, returning it as a string
+function input : prompt string : string
+
+
+@builtin
+;; Prints `text` followed by a newline to standard output
+function println : text string
+
+@builtin
+function eprintln : text string
+;; Prints `text` followed by a newline to standard error
+
+@builtin
+function read_file : path string : string
+;; Reads the entire contents of the file at `path` and returns it as a string
+
+@builtin
+function write_file : path string : content string
+;; Writes `content` to the file at `path`, overwriting if it exists
+
+@builtin
+function append_file : path string : content string
+;; Appends `content` to the file at `path`
+
+@builtin
+function flush_stdout
+;; Flushes the standard output buffer
+
+@builtin
+function flush_stderr
+;; Flushes the standard error buffer

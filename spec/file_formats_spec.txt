@@ -1,0 +1,32 @@
+1..th       : Thorium Source Code
+   - Human-writable Thorium program.
+   - Example:
+       function add : a int : b int : int
+           ret a + b
+   - Editable by developers.
+   - Input to the Thorium compiler/interpreter.
+   - Preserves comments, formatting, and module structure.
+
+2. .thb      : Thorium Human-Readable Bytecode
+   - S-expression style list-of-lists representation.
+   - Scope-aware; optionally includes debug metadata.
+   - Module name is Base64-encoded.
+   - Identifiers (variables, functions, structs, strings) remain as names.
+   - For inspection, debugging, or intermediate representation.
+   - Example:
+       [
+         "dGhvcml1bV9leGFtcGxl",  ; Base64 module name
+         [
+           ["var", "immutable_value", "int", 42],
+           ["function_def", "add", ["a","b"], "int",
+               ["load", "a"], ["load", "b"], ["add"], ["ret"]
+           ]
+         ]
+       ]
+
+3. .thprg   : Thorium Internal Compiled Program
+   - Fully compiled program ready for VM execution.
+   - All identifiers replaced with numeric IDs.
+   - Scope structure preserved.
+   - Minimal metadata unless debug mode is enabled.
+   - Optimized for distribution and execution by element90.
