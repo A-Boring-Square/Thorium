@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-<body>
 
 <h1>Thorium</h1>
 
@@ -22,11 +21,12 @@
 element90           # Thorium VM executable
 thbc                # Thorium Bytecode Compiler executable
 core/               # Standard library modules
+src/                # Source code for element90 and thbc
 </pre>
 
 <ul>
     <li><strong>element90</strong>: runs compiled <code>.thprg</code> programs.</li>
-    <li><strong>thbc</strong>: compiles <code>.th</code> source code to <code>.thb</code> or <code>.thprg</code>.</li>
+    <li><strong>thbc</strong>: compiles <code>.th</code> source code to <code>.thb</code> (human-readable bytecode) or <code>.thprg</code> (compiled program).</li>
     <li><strong>core/</strong>: standard library modules for Thorium programs.</li>
 </ul>
 
@@ -88,13 +88,14 @@ io.print : sum_list : numbers
     <li>Built-in debugging support</li>
 </ul>
 
-<h2Goal</h2>
+<h2>Use Cases</h2>
 
 <p>Thorium is ideal for:</p>
 <ul>
     <li>Learning how a programming language VM works</li>
     <li>Exploring functional programming concepts</li>
     <li>Building small educational projects with a minimal runtime</li>
+    <li>Embedding the VM and program into freestanding executables for distribution</li>
 </ul>
 
 </body>
