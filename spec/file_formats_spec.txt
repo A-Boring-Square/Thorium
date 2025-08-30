@@ -29,4 +29,5 @@
    - All identifiers replaced with numeric IDs.
    - Scope structure preserved.
    - Minimal metadata unless debug mode is enabled.
+   - All text is Base64 encoded (includes types, strings, module name, debug info, ect)
    - Optimized for distribution and execution by element90.
